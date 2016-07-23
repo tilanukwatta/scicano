@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SciCano</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://use.fontawesome.com/8d6deae023.js"></script>
+  </head>
+  <body>
+
+  <div id="search">
+  <h2>
+	Science Canopus (SciCano)
+  </h2>
+
+    <form method=post action="/results">
+      <p>
+      {{ form.search_text }}
+      <input id='btn' type=submit value='Search ArXiv' name='submit_btn'>
+      </p>
+    </form>
+  </div>
+
+  <div id="results">
+  <ul>
+    {% for item in results %}
+        <br>
+        <li>
+        <span class="title"><a href="{{ item.0 }}">{{ item.1 }}</a></span>
+        <br>
+        <span class="author">{{ item.2 }}</a></span>
+        <br>
+        <span class="abstract">{{ item.3 }}</a></span>
+        </li>
+        <br>
+    {% endfor %}
+  </ul>
+  </div>
+
+  </body>
+</html>

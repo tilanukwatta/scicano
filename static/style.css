@@ -1,0 +1,59 @@
+body{
+    background: deepskyblue;
+    font-family: Verdana;
+    margin: 20px;
+}
+
+h2{
+    text-align: center;
+    font-size: 35px;
+    color: white;
+}
+
+p{
+    text-align: center;
+}
+
+#search{
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+    background: darkslateblue;
+    border-radius: 25px;
+}
+
+#search_text {
+    width: 30pc;
+    margin: auto;
+    font-size: 20px;
+}
+
+#btn {
+    font-size: 20px;
+    color: slateblue;
+}
+
+#results{
+    width: 91%;
+    margin: auto;
+    padding-right: 20px;
+    background: whitesmoke;
+    border-radius: 25px;
+}
+
+.title{
+    text-align: left;
+    font-size: 18px;
+}
+
+.author{
+    text-align: left;
+    font-size: 16px;
+    color: purple;
+}
+
+.abstract{
+    text-align: left;
+    font-size: 14px;
+    color: darkslategray;
+}
