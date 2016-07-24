@@ -3,7 +3,6 @@
   <head>
     <title>SciCano</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://use.fontawesome.com/8d6deae023.js"></script>
   </head>
   <body>
 
@@ -16,6 +15,7 @@
       <p>
       {{ form.search_text }}
       <input id='btn' type=submit value='Search ArXiv' name='submit_btn'>
+      <input id='btn' type="button" onclick="location.href='/about';" value="About SciCano" />
       </p>
     </form>
   </div>
@@ -25,7 +25,7 @@
     {% for item in results %}
         <br>
         <li>
-        <span class="title"><a href="{{ item.0 }}">{{ item.1 }}</a></span>
+        <span class="title"><a href="{{ item.0 }}" target="_blank">{{ item.1 }}</a></span>
         <br>
         <span class="author">{{ item.2 }}</a></span>
         <br>

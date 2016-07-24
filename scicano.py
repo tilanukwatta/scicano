@@ -5,11 +5,15 @@ import sqlite3
 import os
 import pandas
 import arxiv_analysis_v3 as model
+import site
 
 app = Flask(__name__)
 
-cpath = os.getcwd() + '/'
-dbpath = '/home/tilan/data/ext_data/arxiv/'
+if site.site == 'local':
+    cpath = os.getcwd() + '/'
+else:
+    cpath = '/home/tilanukwatta/scicano/'
+#dbpath = '/home/tilan/data/ext_data/arxiv/'
 dbpath = cpath
 df_file_name = "arxiv_papers.sqlite.db"
 
@@ -36,6 +40,10 @@ def index():
     form = searchForm(request.form)
     return render_template('home.html', form=form)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/results', methods=['POST'])
 def results():
     form = searchForm(request.form)
@@ -43,21 +51,11 @@ def results():
         search_text = request.form['search_text']
 
         #index = np.random.randint(1, 1000, 10)
-        index = model.find_paper_idx(search_text, 500)[:25]+1
+        #index = model.find_paper_idx(search_text, 500)[:25]+1
+        index = model.find_paper_idx(search_text, 500)+1
         #import ipdb; ipdb.set_trace() # debugging code
 
         results = get_paper_info(index).values
-
-        """
-        for k in range(np.random.randint(1,10)):
-            results.append([k,
-                            "https://arxiv.org/abs/astro-ph/9204001",
-                            "Gamma-Ray Bursts as the Death Throes of Massive Binary Stars",
-                            "Ramesh Narayan,Bohdan Paczy&#x144;ski,Tsvi Piran",
-                            "It is proposed that gamma-ray bursts are created in the mergers \
-                            of double neutron star binaries and black hole neutron star binaries \
-                            at cosmological distances."])
-        """
 
         return render_template('home.html', results=results, form=form)
 

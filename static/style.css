@@ -41,6 +41,14 @@ p{
     border-radius: 25px;
 }
 
+#about{
+    width: 85%;
+    margin: auto;
+    padding: 20px;
+    background: whitesmoke;
+    border-radius: 25px;
+}
+
 .title{
     text-align: left;
     font-size: 18px;

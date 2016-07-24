@@ -1,26 +1,27 @@
 #!/usr/bin/env python
 
-import csv
 import numpy as np
 import os
 import pandas
-import urllib2
-from BeautifulSoup import BeautifulSoup
 import sqlite3
-import time
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import cdist
+import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
-import cPickle
+from sklearn.externals import joblib
 import re
+import site
 
 stop = stopwords.words('english')
-cpath = os.getcwd() + '/'
-dbpath = '/home/tilan/data/ext_data/arxiv/'
+
+if site.site == 'local':
+    cpath = os.getcwd() + '/'
+else:
+    cpath = '/home/tilanukwatta/scicano/'
+#dbpath = '/home/tilan/data/ext_data/arxiv/'
 dbpath = cpath
 df_file_name = "arxiv_papers.sqlite.db"
 
@@ -69,18 +70,6 @@ def xyplot(x, y, xmin, xmax, ymin, ymax, title, xlabel, ylabel, plot_name, line=
     if (ymin < ymax):
         ax.set_ylim(ymin, ymax)
 
-    """
-    import scipy.optimize as optimization
-    fit = optimization.curve_fit(func, np.array(x), np.array(y))[0]
-    c = fit[0]
-    m = fit[1]
-    yfit = []
-    for k in x:
-        yfit.append(func(k, c, m))
-    ax.plot(x, yfit, 'g')
-    #print m, c
-    """
-
     #ax.axhline(linewidth=axis_width, color="k")
     #ax.axvline(linewidth=axis_width, color="k")
     plt.title(title)
@@ -126,16 +115,16 @@ def find_clusters(paper_text, num_clusters, search_text):
     print filename, model_filename
 
     if os.path.exists(filename):
-        data_file = open(cpath + filename, 'rb')
-        vec = cPickle.load(data_file)
+        vec = joblib.load(cpath + filename)
         count = vec[0]
         tfidf = vec[1]
-        data_file.close()
     else:
         tfidf = TfidfTransformer(use_idf=True, norm=None, smooth_idf=True)
+
         text = []
         for i in range(len(paper_text)):
             #print 'Before: ', paper_text[k]
+            #text.append(paper_text[i])
             text.append(preprocessor(paper_text[i]))
             #print 'After: ', titles[k]
             #import ipdb; ipdb.set_trace() # debugging code
@@ -143,14 +132,12 @@ def find_clusters(paper_text, num_clusters, search_text):
         count = CountVectorizer()
         count.fit(text)
         bag = count.transform(text)
-        #tfidf = TfidfTransformer(use_idf=True, norm='l2', smooth_idf=True)
+        tfidf = TfidfTransformer(use_idf=True, norm='l2', smooth_idf=True)
         tfidf.fit(bag)
         X = tfidf.transform(bag)
 
         vec = [count, tfidf]
-        data_file = open(cpath + filename, 'wb')
-        cPickle.dump(vec, data_file)
-        data_file.close()
+        joblib.dump(vec, cpath + filename, compress=8)
         print 'X Shape: ', X.shape
 
     #print count.vocabulary_
@@ -162,20 +149,16 @@ def find_clusters(paper_text, num_clusters, search_text):
     #import ipdb;ipdb.set_trace() # debugging code
 
     if os.path.exists(model_filename):
-        data_file = open(cpath + model_filename, 'rb')
-        model = cPickle.load(data_file)
+        model = joblib.load(cpath + model_filename)
         kmeans = model[0]
         predict = model[1]
-        data_file.close()
     else:
         print "Clustering the data..."
         kmeans = KMeans(n_clusters=k, n_jobs=2)
         kmeans.fit(X)
         predict = kmeans.predict(X)
         model = [kmeans, predict]
-        data_file = open(cpath + model_filename, 'wb')
-        cPickle.dump(model, data_file)
-        data_file.close()
+        joblib.dump(model, cpath + model_filename, compress=8)
         print "Data  Clustering Completed."
 
     y = tfidf.transform(count.transform([preprocessor(search_text)]))
@@ -199,20 +182,16 @@ def find_clusters(paper_text, num_clusters, search_text):
 def find_paper_idx(search_text, num_clusters):
 
     filename = "count_vectorizer.dat"
-    if os.path.exists(filename):
-        data_file = open(cpath + filename, 'rb')
-        vec = cPickle.load(data_file)
+    if os.path.exists(cpath + filename):
+        vec = joblib.load(cpath + filename)
         count = vec[0]
         tfidf = vec[1]
-        data_file.close()
 
     filename = "kmeans_" + str(num_clusters) + ".dat"
-    if os.path.exists(filename):
-        data_file = open(cpath + filename, 'rb')
-        model = cPickle.load(data_file)
+    if os.path.exists(cpath + filename):
+        model = joblib.load(cpath + filename)
         kmeans = model[0]
         predict = model[1]
-        data_file.close()
 
     y = tfidf.transform(count.transform([preprocessor(search_text)]))
 
@@ -232,11 +211,13 @@ if __name__ == '__main__':
 
     paper_titles = papers['title'].values
     #paper_authors = papers['authors'].values
+    paper_abstracts = papers['abstract'].values
 
-    paper_text = []
-    for k in range(len(paper_titles)):
-        paper_text.append(paper_titles[k])
-        #paper_text.append(paper_titles[k] + " " + paper_authors[k])
+    #paper_text = []
+    #for k in range(len(paper_titles)):
+    #    paper_text.append(paper_titles[k] + " " + paper_abstracts[k])
+
+    paper_text = paper_titles
 
     #import ipdb;ipdb.set_trace() # debugging code
 
