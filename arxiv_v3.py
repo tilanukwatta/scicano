@@ -1,5 +1,19 @@
 #!/usr/bin/env python
 
+""" Collect publication data from arxiv.org
+
+Version 3.0
+
+Purpose
+=======
+
+The purpose of this program is to download publication data (title, authors and abstracts)
+from the arxiv.org and save them in a sqlite database for further processing.
+
+This program handles arxiv papers published starting from January 2015.
+
+"""
+
 import csv
 import numpy as np
 import os
@@ -48,16 +62,6 @@ def show_page(data, url):
     print abstract
     print "\n"
 
-    #import ipdb; ipdb.set_trace() # debugging code
-
-    #for line in data.readlines():
-    #    print line
-        #l.append(line)
-    #s = '\n'.join(l)
-    #if s.find('radio') >= 0:
-    #    count = count + 1
-    #    print 'radio count: ', count, '  ', grb[0], '  ', url
-
 def get_last_record():
     conn = sqlite3.connect(dbpath + "arxiv_papers.sqlite.db")
     c = conn.cursor()
@@ -70,7 +74,6 @@ def get_last_record():
 
     return last_record
 
-
 if __name__ == '__main__':
 
     preURL = "https://arxiv.org/abs/"
@@ -81,9 +84,8 @@ if __name__ == '__main__':
     month = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
     article = np.array(range(99999)) + 1
 
-    #last_record = get_last_record()  # this for articles on or before 1999
     last_record = '20' + get_last_record()  # this for articles on or after 2000
-    #last_record = last_record[:6]
+
     #print last_record
     #import ipdb; ipdb.set_trace() # debugging code
 
@@ -116,31 +118,5 @@ if __name__ == '__main__':
                             save_page(data, url)
             #time.sleep(60)
         #time.sleep(120)
-
-    """
-    import ipdb; ipdb.set_trace() # debugging code
-    #url = 'http://gcn.gsfc.nasa.gov/other/160104A.gcn3'
-
-    count = 0
-    for url, grb in zip(url_arr, grb_list):
-        print 'Reading... ', url
-        try:
-            data = urllib2.urlopen(url)
-        except:
-            try:
-                data = urllib2.urlopen(url2)
-            except:
-                print "error: ", url
-        l = []
-        s = ''
-        for line in data.readlines():
-            l.append(line)
-        s = '\n'.join(l)
-        if s.find('radio') >= 0:
-            count = count + 1
-            print 'radio count: ', count, '  ', grb[0], '  ', url
-
-    print 'GRBs with radio observations: ', count
-    """
     #import ipdb; ipdb.set_trace() # debugging code
 

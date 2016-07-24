@@ -1,5 +1,15 @@
+""" Main application of scicano web application
+
+Purpose
+=======
+
+This program will handle web request and render
+web pages dynamically for the user.
+
+"""
+
 from flask import Flask, render_template, request
-from wtforms import Form, TextAreaField, validators, StringField
+from wtforms import Form, validators, StringField
 import numpy as np
 import sqlite3
 import os

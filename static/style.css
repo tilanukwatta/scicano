@@ -45,7 +45,7 @@ p{
     width: 85%;
     margin: auto;
     padding: 20px;
-    background: whitesmoke;
+    background: white;
     border-radius: 25px;
 }
 
@@ -64,4 +64,15 @@ p{
     text-align: left;
     font-size: 14px;
     color: darkslategray;
+}
+
+.heading{
+    text-align: left;
+    font-size: 22px;
+    font-weight: bolder;
+}
+
+.txt{
+    text-align: left;
+    font-size: 20px;
 }

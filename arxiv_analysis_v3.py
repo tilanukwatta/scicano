@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+""" Implements the recommendation engine of the scicano web application
+
+Version 3.0
+
+Purpose
+=======
+
+The purpose of this program is to implement the recommendation engine
+of scicano. It also has routines to make diagnostic plots visualize
+various aspects of the engine.
+
+"""
+
 import numpy as np
 import os
 import pandas
@@ -8,7 +21,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from sklearn.externals import joblib

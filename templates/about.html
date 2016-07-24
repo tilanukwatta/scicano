@@ -11,14 +11,40 @@
 	About Science Canopus (SciCano)
   </h2>
 
+  <p>
+  <input id='btn' type="button" onclick="location.href='/';" value="SciCano" />
+  </p>
+
   </div>
 
   <br>
 
   <div id="about">
   <br>
-  SciCano is a recommendation engine fot scientific paper.
+  <span class="heading">
+  Created by <a href="https://www.tilanukwatta.com" target="_blank">Tilan Ukwatta</a>
+  </span>
   <br>
+  <br>
+  <span class="txt">
+  SciCano is a recommendation engine for scientific papers posted on the <a href="https://arxiv.org/" target="_blank">ArXiv.org</a>
+  pre-print server. It was developed as a demonstration project for
+  <a href="http://insightdatascience.com/" target="_blank">Insight Data Science</a> program Skype interview. The goal of SciCano
+  is to let people find research papers relevant to the search text that they are looking for. The SciCano do this by clustering the
+  papers according to their similarity and by matching the search text to a particular cluster. Unlike key word search, SciCano
+  may come up with unexpectedly interesting articles that was not obviously relevant.
+  </span>
+
+  <br>
+  <p>
+  <img src="{{ url_for('static', filename='elbow_plot.png') }}" alt="Elbow Plot">
+  </p>
+  <br>
+  <p>
+  <img src="{{ url_for('static', filename='cluster_num_dist_plot.png') }}" alt="Cluster Membership Number Distribution">
+  </p>
+  <br>
+
   </div>
 
   </body>

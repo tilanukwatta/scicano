@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+""" Implements the recommendation engine of the scicano web application
+
+Version 1.0
+
+Purpose
+=======
+
+The purpose of this program is to implement the recommendation engine
+of scicano. It also has routines to make diagnostic plots visualize
+various aspects of the engine.
+
+"""
+
 import csv
 import numpy as np
 import os
