@@ -5,11 +5,11 @@ import sqlite3
 import os
 import pandas
 import arxiv_analysis_v3 as model
-import site
+import scicano_site
 
 app = Flask(__name__)
 
-if site.site == 'local':
+if scicano_site.site == 'local':
     cpath = os.getcwd() + '/'
 else:
     cpath = '/home/tilanukwatta/scicano/'

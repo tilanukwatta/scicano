@@ -13,11 +13,11 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from sklearn.externals import joblib
 import re
-import site
+import scicano_site
 
 stop = stopwords.words('english')
 
-if site.site == 'local':
+if scicano_site.site == 'local':
     cpath = os.getcwd() + '/'
 else:
     cpath = '/home/tilanukwatta/scicano/'
