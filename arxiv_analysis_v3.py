@@ -19,8 +19,10 @@ stop = stopwords.words('english')
 
 if scicano_site.site == 'local':
     cpath = os.getcwd() + '/'
+    staticpath = os.getcwd() + '/static/'
 else:
     cpath = '/home/tilanukwatta/scicano/'
+    staticpath = '/home/tilanukwatta/scicano/static/'
 #dbpath = '/home/tilan/data/ext_data/arxiv/'
 dbpath = cpath
 df_file_name = "arxiv_papers.sqlite.db"
@@ -59,7 +61,8 @@ def xyplot(x, y, xmin, xmax, ymin, ymax, title, xlabel, ylabel, plot_name, line=
 
 
     if (line == 1):
-        ax.plot(x, y, 'bx-', linewidth=2)
+        ax.plot(x, y, 'b', linewidth=2)
+        ax.plot(x, y, 'ro')
         #ax.plot([0., 100.], [0., 100.], 'b', linewidth=1)
     else:
         ax.plot(x, y, 'ro')
@@ -79,31 +82,83 @@ def xyplot(x, y, xmin, xmax, ymin, ymax, title, xlabel, ylabel, plot_name, line=
     plt.savefig(plot_name, bbox_inches='tight')
     plt.clf()
 
+def xybarplot(x, y, xmin, xmax, ymin, ymax, title, xlabel, ylabel, plot_name):
+    plt.subplots_adjust(hspace=0.4)
+    ax = plt.subplot(111)
+
+    ax.bar(x, y, 1.0, color='blue', align='center')
+
+    if (xmin < xmax):
+        ax.set_xlim(xmin, xmax)
+    if (ymin < ymax):
+        ax.set_ylim(ymin, ymax)
+
+    #ax.axhline(linewidth=axis_width, color="k")
+    #ax.axvline(linewidth=axis_width, color="k")
+    plt.title(title)
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    #plt.show()
+    plt.savefig(plot_name, bbox_inches='tight')
+    plt.clf()
+
 def perform_cluster_analysis(dataset):
 
-    X = dataset
+    filename = 'elbow_plot.dat'
 
-    print 'X Shape: ', X.shape
+    if os.path.exists(cpath + filename):
+        data = joblib.load(cpath + filename)
+        K = data[0]
+        meandistortions = data[1]
+    else:
+        X = dataset
+        print 'X Shape: ', X.shape
 
-    K = range(1, 100)
-    meandistortions = []
-    cluster_centers = []
-    for k in K:
-        print k
-        kmeans = KMeans(n_clusters=k)
-        kmeans.fit(X)
-        #import ipdb; ipdb.set_trace() # debugging code
-        #meandistortions.append(sum(np.min(cdist(X, kmeans.cluster_centers_, 'euclidean'), axis=1))/X.shape[0])
-        meandistortions.append(kmeans.inertia_)
-        cluster_centers.append(kmeans.cluster_centers_)
-        #print 'k: ', k, ' Cluster Centers: ', kmeans.cluster_centers_
+        #K = range(1, 50, 5)
+        K = [1, 2, 5, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+        meandistortions = []
+        cluster_centers = []
+        for k in K:
+            print k
+            kmeans = KMeans(n_clusters=k)
+            kmeans.fit(X)
+            #import ipdb; ipdb.set_trace() # debugging code
+            #meandistortions.append(sum(np.min(cdist(X, kmeans.cluster_centers_, 'euclidean'), axis=1))/X.shape[0])
+            meandistortions.append(kmeans.inertia_)
+            cluster_centers.append(kmeans.cluster_centers_)
+            #print 'k: ', k, ' Cluster Centers: ', kmeans.cluster_centers_
+        data = [K, meandistortions]
+        joblib.dump(data, cpath + filename, compress=8)
 
-
-    plot_name = "elbow_plot.pdf"
+    plot_name = "elbow_plot.png"
     title = 'Selecting k with the Elbow Method'
-    xlabel = 'k'
-    ylabel = 'Average distortion'
-    xyplot(K, meandistortions, 0, 0, 0, 0, title, xlabel, ylabel, plot_name, line=1, y_log=0)
+    xlabel = 'Number of Clusters (k)'
+    ylabel = 'Average Distortion'
+    xyplot(K, meandistortions, 0, 0, 0, 0, title, xlabel, ylabel, staticpath + plot_name, line=1, y_log=0)
+
+def plot_cluster_number_distribution(predictions, num_clusters):
+
+    filename = 'cluster_num_dist_plot.dat'
+
+    if os.path.exists(cpath + filename):
+        data = joblib.load(cpath + filename)
+        x = data[0]
+        y = data[1]
+    else:
+        x = []
+        y = []
+        for i in range(num_clusters):
+            wh = np.where(predictions == i)[0]
+            x.append(i)
+            y.append(len(wh))
+        data = [x, y]
+        joblib.dump(data, cpath + filename, compress=8)
+
+    plot_name = "cluster_num_dist_plot.png"
+    title = 'Cluster Member Distribution'
+    xlabel = 'Cluster Label'
+    ylabel = 'Number of Publications'
+    xybarplot(x, y, 0, num_clusters, 0, 0, title, xlabel, ylabel, staticpath + plot_name)
 
 def find_clusters(paper_text, num_clusters, search_text):
 
@@ -114,7 +169,7 @@ def find_clusters(paper_text, num_clusters, search_text):
     model_filename = "kmeans_" + str(k) + ".dat"
     print filename, model_filename
 
-    if os.path.exists(filename):
+    if os.path.exists(cpath + filename):
         vec = joblib.load(cpath + filename)
         count = vec[0]
         tfidf = vec[1]
@@ -139,6 +194,8 @@ def find_clusters(paper_text, num_clusters, search_text):
         vec = [count, tfidf]
         joblib.dump(vec, cpath + filename, compress=8)
         print 'X Shape: ', X.shape
+        # plot elbow plot to look at the effect of different number of clusters
+        perform_cluster_analysis(X)
 
     #print count.vocabulary_
     #perform_cluster_analysis(X)
@@ -148,7 +205,7 @@ def find_clusters(paper_text, num_clusters, search_text):
 
     #import ipdb;ipdb.set_trace() # debugging code
 
-    if os.path.exists(model_filename):
+    if os.path.exists(cpath + model_filename):
         model = joblib.load(cpath + model_filename)
         kmeans = model[0]
         predict = model[1]
@@ -165,11 +222,11 @@ def find_clusters(paper_text, num_clusters, search_text):
 
     #for i in range(10):
     #    print predict[i], paper_titles[i]
+    plot_cluster_number_distribution(predict, num_clusters)
 
     y_cluster = kmeans.predict(y)
     print "Predicted cluster: ", y_cluster
     wh = np.where(predict == y_cluster)[0]
-
     #import ipdb;ipdb.set_trace() # debugging code
 
     target_papers = paper_titles[wh]
