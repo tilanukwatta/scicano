@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>SciCano</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon.ico') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
   </head>
   <body>
 
@@ -20,11 +21,13 @@
   <br>
 
   <div id="about">
+
   <br>
   <span class="heading">
   Created by <a href="https://www.tilanukwatta.com" target="_blank">Tilan Ukwatta</a>
   </span>
   <br>
+
   <br>
   <span class="txt">
   SciCano is a recommendation engine for scientific papers posted on the <a href="https://arxiv.org/" target="_blank">ArXiv.org</a>
@@ -34,12 +37,91 @@
   papers according to their similarity and by matching the search text to a particular cluster. Unlike key word search, SciCano
   may come up with unexpectedly interesting articles that was not obviously relevant.
   </span>
+  <br>
 
   <br>
+  <span class="heading">
+  Acquiring Data
+  </span>
+  <br>
+
+  <br>
+  <span class="txt">
+  In order to cluster papers, I have downloaded title, authors, and abstracts of all the papers in the ArXIv.org archive.
+  While getting data I learned that ArXiv.org will block your IP address if you send too many requests in a short period of time.
+  After some experimenting, I found that if your requests have a time gap of 3 seconds or
+  more then you can continuously get paper information from the ArXiv.org servers. This site currently has all articles
+  published in ArXiv.org in 2016.
+  </span>
+  <br>
+
+  <br>
+  <span class="heading">
+  Cleaning Data
+  </span>
+  <br>
+
+  <br>
+  <span class="txt">
+  Before clustering, I have cleaned text by removing latex equations and any special characters. Then I
+  removed stop words such as "the" or "is" using NLTK's list of English stop words and used NLTK's Potter
+  stemmer to break down words into its root form. The "word stemming" is the process of transforming a word
+  into its root form that allows us to map related words to the same stem. This will prevent the various
+  form of the same word acting like they are separate words.
+  </span>
+  <br>
+
+  <br>
+  <span class="heading">
+  Feature Extraction
+  </span>
+  <br>
+
+  <br>
+  <span class="txt">
+  I used the "bag-of-words" model to represent text as numerical features. This model will create a vocabulary of
+  unique words in all the papers. Then it will construct a feature vector for each paper that contains the
+  counts of how often each word occurs in that particular paper. For simplicity, in this implementation,
+  I used single words (1-gram or unigram) in the model. In addition, I used a technique called term
+  frequency-inverse document frequency (tf-idf) to weight down frequently occurring words in feature vectors.
+  </span>
+  <br>
+
+  <br>
+  <span class="heading">
+  k-means Clustering
+  </span>
+  <br>
+
+  <br>
+  <span class="txt">
+  Clustering is the process of identifying groups of similar objects based on some set of characteristics.
+  After clustering, objects in one group are similar to each other compared to objects in another group.
+  I used k-means clustering algorithm to cluster papers. k-means is a popular clustering algorithm used
+  in many applications.
+  <br> <br>
+  The k in the k-means algorithm refers to the number of clusters that we expect to be present in the data.
+  The value of k is an input to the algorithm. In order to find the appropriate value of k, one normally plot
+  the distortion (sum of distances of samples to their closest cluster center) as a function k. If there is
+  a clear intrinsic number of clusters in the data we should see a clear break and flattening of the curve
+  indicating the appropriate cluster number, k. This type of plot is called the elbow plot. As shown in the
+  figure below, in our case we cannot see a clear break and flattening in the plot. The curve changes the
+  slope after about 100 clusters and then instead of flattening out it keeps going down linearly. This may
+  indicate that there is no intrinsic number of clusters for this data set.
+  </span>
+  <br>
+
+
   <p>
   <img src="{{ url_for('static', filename='elbow_plot.png') }}" alt="Elbow Plot">
   </p>
   <br>
+  <span class="txt">
+  In this implementation, I have chosen k to be 500. The figure below shows the distribution of
+  the number of members in each cluster.
+  </span>
+  <br>
+
   <p>
   <img src="{{ url_for('static', filename='cluster_num_dist_plot.png') }}" alt="Cluster Membership Number Distribution">
   </p>
