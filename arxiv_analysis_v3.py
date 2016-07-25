@@ -32,11 +32,13 @@ stop = stopwords.words('english')
 if scicano_site.site == 'local':
     cpath = os.getcwd() + '/'
     staticpath = os.getcwd() + '/static/'
+    #dbpath = cpath
+    dbpath = '/home/tilan/data/ext_data/arxiv/'
 else:
     cpath = '/home/tilanukwatta/scicano/'
     staticpath = '/home/tilanukwatta/scicano/static/'
-#dbpath = '/home/tilan/data/ext_data/arxiv/'
-dbpath = cpath
+    dbpath = cpath
+
 df_file_name = "arxiv_papers.sqlite.db"
 
 def tokenizer_porter(text):
@@ -128,11 +130,12 @@ def perform_cluster_analysis(dataset):
 
         #K = range(1, 50, 5)
         K = [1, 2, 5, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+        #K = [1, 2, 5, 10, 50, 100]
         meandistortions = []
         cluster_centers = []
         for k in K:
             print k
-            kmeans = KMeans(n_clusters=k)
+            kmeans = KMeans(n_clusters=k, n_jobs=3)
             kmeans.fit(X)
             #import ipdb; ipdb.set_trace() # debugging code
             #meandistortions.append(sum(np.min(cdist(X, kmeans.cluster_centers_, 'euclidean'), axis=1))/X.shape[0])
@@ -223,7 +226,7 @@ def find_clusters(paper_text, num_clusters, search_text):
         predict = model[1]
     else:
         print "Clustering the data..."
-        kmeans = KMeans(n_clusters=k, n_jobs=2)
+        kmeans = KMeans(n_clusters=k, n_jobs=3)
         kmeans.fit(X)
         predict = kmeans.predict(X)
         model = [kmeans, predict]

@@ -21,11 +21,15 @@ app = Flask(__name__)
 
 if scicano_site.site == 'local':
     cpath = os.getcwd() + '/'
+    #dbpath = cpath
+    dbpath = '/home/tilan/data/ext_data/arxiv/'
 else:
     cpath = '/home/tilanukwatta/scicano/'
-#dbpath = '/home/tilan/data/ext_data/arxiv/'
-dbpath = cpath
+    dbpath = cpath
+
 df_file_name = "arxiv_papers.sqlite.db"
+
+num_latest = 25  # display 25 most recent papers
 
 class searchForm(Form):
     #search_text = TextAreaField('', [validators.DataRequired()])
@@ -35,9 +39,10 @@ def get_paper_info(index):
     conn = sqlite3.connect(dbpath + df_file_name)
     c = conn.cursor()
 
-    #c.execute('SELECT * FROM arxiv_papers ORDER BY rowid')
-    #import ipdb; ipdb.set_trace() # debugging code
-    c.execute('SELECT * FROM arxiv_papers WHERE rowid in ({0})'.format(', '.join('?' for _ in index)), index)
+    # display 25 most recent papers
+    index = sorted(index, reverse=True)[:num_latest]
+
+    c.execute('SELECT * FROM arxiv_papers WHERE rowid IN ({0}) ORDER BY rowid DESC'.format(', '.join('?' for _ in index)), index)
 
     conn.commit()
     results = c.fetchall()
