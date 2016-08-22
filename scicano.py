@@ -67,7 +67,8 @@ def results():
 
         #index = np.random.randint(1, 1000, 10)
         #index = model.find_paper_idx(search_text, 500)[:25]+1
-        index = model.find_paper_idx(search_text, 500)+1
+        #index = model.find_paper_idx(search_text, 500)+1
+        index = model.find_paper_idx(search_text, 1000)+1
         #import ipdb; ipdb.set_trace() # debugging code
 
         results = get_paper_info(index).values

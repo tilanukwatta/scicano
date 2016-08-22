@@ -115,7 +115,7 @@ if __name__ == '__main__':
                         time.sleep(3)
                         if ar_end == 0:
                             print "\n" + url + "\n"
-                            #save_page(data, url)
+                            save_page(data, url)
             #time.sleep(60)
         #time.sleep(120)
     #import ipdb; ipdb.set_trace() # debugging code
