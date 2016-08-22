@@ -24,8 +24,9 @@ import sqlite3
 import time
 
 cpath = os.getcwd() + '/'
-dbpath = '/home/tilan/data/ext_data/arxiv/'
-dbpath = cpath
+#dbpath = '/home/tilan/data/ext_data/arxiv/'
+dbpath = '/home/tilanukwatta/scicano/'
+#dbpath = cpath
 
 def save_page(data, url):
     soup = BeautifulSoup(data)
@@ -86,7 +87,7 @@ if __name__ == '__main__':
 
     last_record = '20' + get_last_record()  # this for articles on or after 2000
 
-    #print last_record
+    print last_record
     #import ipdb; ipdb.set_trace() # debugging code
 
     for yy in year:
@@ -99,7 +100,7 @@ if __name__ == '__main__':
                 url_id = url_id.replace('.', '')
 
                 #print "\n" + url + "\n"
-                print last_record, url_id
+                #print last_record, url_id
                 #import ipdb; ipdb.set_trace() # debugging code
 
                 if long(url_id.split('.')[0]) > long(last_record):
