@@ -2,7 +2,7 @@
 
 """ Implements the recommendation engine of the scicano web application
 
-Version 3.0
+Version 1.0
 
 Purpose
 =======
@@ -181,8 +181,8 @@ def find_clusters(paper_text, num_clusters, search_text):
     k = num_clusters
     print 'Number of Clusters: ', k
 
-    filename = "count_vectorizer.dat"
-    model_filename = "kmeans_" + str(k) + ".dat"
+    filename = "count_vectorizer_new.dat"
+    model_filename = "kmeans_" + str(k) + "_new.dat"
     print filename, model_filename
 
     if os.path.exists(cpath + filename):
@@ -210,8 +210,11 @@ def find_clusters(paper_text, num_clusters, search_text):
         vec = [count, tfidf]
         joblib.dump(vec, cpath + filename, compress=8)
         print 'X Shape: ', X.shape
+
         # plot elbow plot to look at the effect of different number of clusters
+        print "Perform cluster analysis..."
         perform_cluster_analysis(X)
+        print "Perform cluster analysis...done."
 
     #print count.vocabulary_
     #perform_cluster_analysis(X)
@@ -234,15 +237,18 @@ def find_clusters(paper_text, num_clusters, search_text):
         joblib.dump(model, cpath + model_filename, compress=8)
         print "Data  Clustering Completed."
 
-    y = tfidf.transform(count.transform([preprocessor(search_text)]))
-
     #for i in range(10):
     #    print predict[i], paper_titles[i]
+    print "Plotting the cluster distribution..."
     plot_cluster_number_distribution(predict, num_clusters)
+    print "Plotting the cluster distribution...done."
     #import ipdb;ipdb.set_trace() # debugging code
 
+    """
+    y = tfidf.transform(count.transform([preprocessor(search_text)]))
+
     y_cluster = kmeans.predict(y)
-    print "Predicted cluster: ", y_cluster
+    #print "Predicted cluster: ", y_cluster
     wh = np.where(predict == y_cluster)[0]
     #import ipdb;ipdb.set_trace() # debugging code
 
@@ -252,6 +258,7 @@ def find_clusters(paper_text, num_clusters, search_text):
 
     #import ipdb;ipdb.set_trace() # debugging code
     return wh
+    """
 
 def find_paper_idx(search_text, num_clusters):
 
@@ -301,8 +308,8 @@ if __name__ == '__main__':
     #search_text = "Radiation Transfer in Gamma-Ray Bursts"
     #search_text = "nova is a compact star that burst periodically"
 
-    #num_clusters = 500
-    num_clusters = 1000
+    num_clusters = 500
+    #num_clusters = 1000
 
     find_clusters(paper_text, num_clusters, search_text)
 
