@@ -14,7 +14,7 @@ import numpy as np
 import sqlite3
 import os
 import pandas
-import arxiv_analysis_v3 as model
+import generate_cluster_model_v1 as model
 import scicano_site
 
 app = Flask(__name__)
@@ -68,7 +68,7 @@ def results():
         #index = np.random.randint(1, 1000, 10)
         #index = model.find_paper_idx(search_text, 500)[:25]+1
         #index = model.find_paper_idx(search_text, 500)+1
-        index = model.find_paper_idx(search_text, 1000)+1
+        index = model.find_paper_idx(search_text, 500)+1
         #import ipdb; ipdb.set_trace() # debugging code
 
         results = get_paper_info(index).values

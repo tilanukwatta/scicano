@@ -181,8 +181,8 @@ def find_clusters(paper_text, num_clusters, search_text):
     k = num_clusters
     print 'Number of Clusters: ', k
 
-    filename = "count_vectorizer_new.dat"
-    model_filename = "kmeans_" + str(k) + "_new.dat"
+    filename = "count_vectorizer.dat"
+    model_filename = "kmeans_" + str(k) + ".dat"
     print filename, model_filename
 
     if os.path.exists(cpath + filename):
