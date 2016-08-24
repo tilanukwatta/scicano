@@ -263,16 +263,14 @@ def find_clusters(paper_text, num_clusters, search_text):
 def find_paper_idx(search_text, num_clusters):
 
     filename = "count_vectorizer.dat"
-    if os.path.exists(cpath + filename):
-        vec = joblib.load(cpath + filename)
-        count = vec[0]
-        tfidf = vec[1]
+    vec = joblib.load(cpath + filename)
+    count = vec[0]
+    tfidf = vec[1]
 
     filename = "kmeans_" + str(num_clusters) + ".dat"
-    if os.path.exists(cpath + filename):
-        model = joblib.load(cpath + filename)
-        kmeans = model[0]
-        predict = model[1]
+    model = joblib.load(cpath + filename)
+    kmeans = model[0]
+    predict = model[1]
 
     y = tfidf.transform(count.transform([preprocessor(search_text)]))
 

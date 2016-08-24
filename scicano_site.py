@@ -1,5 +1,5 @@
 """
 Web site location information
 """
-site = "local"
+site = "production"
 
